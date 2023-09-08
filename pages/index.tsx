@@ -1,5 +1,6 @@
 import { data } from "@/const/jobs";
 import { useState } from "react";
+import Balancer from "react-wrap-balancer";
 
 export default function Home() {
   const [selected, setSelected] = useState(data.job_listings[0]);
@@ -51,7 +52,7 @@ export default function Home() {
                           ) : null}
                         </p>
                         <h2 className="font-bold text-base line-clamp-2 text-ellipsis">
-                          {job.title}
+                          <Balancer>{job.title}</Balancer>
                         </h2>
                       </div>
                     </div>
