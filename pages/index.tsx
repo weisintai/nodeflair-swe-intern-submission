@@ -1,118 +1,125 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import { data } from "@/const/jobs";
+import { useState } from "react";
 
 export default function Home() {
+  const [selected, setSelected] = useState(data.job_listings[0]);
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className={`px-4 font-sans max-w-[1140px] mx-auto`}>
+      <div className="flex py-5 px-1 justify-between items-center">
+        <h2 className="text-lg font-bold">{data.total_listings_count} jobs</h2>
+      </div>
+      <div className="w-full flex items-start">
+        <div className="w-full flex-shrink-0 pt-1 lg:w-[427px] pb-5">
+          {data.job_listings.map((job) => {
+            return (
+              <div
+                className="p-1"
+                key={job.id + job.title}
+                onClick={() => setSelected(job)}
+              >
+                <div
+                  className={`relative cursor-pointer transition-all duration-200 ease rounded-lg text-sm pb-10 bg-white shadow-inner job-listing-card ${
+                    job.id === selected.id
+                      ? "outline-3 outline-[#1FC76A] outline"
+                      : null
+                  }`}
+                >
+                  <div className="p-5 flex flex-col job-listing-top-information">
+                    <div className="flex items-start justify-start">
+                      <div className="mr-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={job.company.avatar}
+                          alt={job.company.companyname}
+                          className="rounded w-[45px] h-[45px] max-w-none"
+                        />
+                      </div>
+                      <div className="order-3 ml-auto pl-2">
+                        <div className="w-max font-semibold text-[#1fc76a] py-1 px-2 rounded-md bg-[#DDF7E9]">
+                          {job.position}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="whitespace-pre-wrap mb-1">
+                          <span>{job.company.companyname}</span>
+                          {job.company.rating > 0 ? (
+                            <>
+                              &nbsp;&nbsp;
+                              <span>{job.company.rating} ★</span>
+                            </>
+                          ) : null}
+                        </p>
+                        <h2 className="font-bold text-base line-clamp-2 text-ellipsis">
+                          {job.title}
+                        </h2>
+                      </div>
+                    </div>
+                    <div className="pl-[55px]">
+                      <div className="text-[#838383] mb-1 whitespace-pre-wrap">
+                        <span className="text-[#1FC76A] font-bold">
+                          {job.time_ago} ago
+                        </span>
+                        &nbsp; &nbsp;
+                        <div className="inline-block">
+                          <svg
+                            aria-hidden="true"
+                            focusable="false"
+                            data-prefix="fas"
+                            data-icon="map-marker-alt"
+                            className="h-[1em] inline-block "
+                            role="img"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 384 512"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z"
+                            ></path>
+                          </svg>
+                          &nbsp;
+                          {job.country}
+                        </div>
+                      </div>
+                      {job.salary_min ? (
+                        <div className="font-semibold whitespace-pre-wrap m-1">
+                          {job.formatted_salary_min} -{" "}
+                          {job.formatted_salary_max} / mth &nbsp;
+                          {job.is_salary_estimated ? (
+                            <span className="py-1 px-2 rounded bg-[#F1F1F1]">
+                              EST
+                            </span>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="px-5 w-full overflow-hidden text-ellipsis  whitespace-nowrap absolute after:align-middle">
+                    {job.tech_stacks.map((tech, index) => {
+                      return (
+                        <>
+                          <span
+                            key={tech + index.toString()}
+                            className="text-[#838383] inline-block py-1 px-2 overflow-hidden max-w-[90%] font-bold rounded text-ellipsis bg-[#F1F1F1]"
+                          >
+                            {tech.name}
+                          </span>
+                          &nbsp;
+                        </>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="hidden lg:block sticky top-[106px]">
+          <div className="scrollable">
+            <div className="bg-white">{selected.title}</div>
+          </div>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    </div>
+  );
 }
